@@ -312,7 +312,7 @@ def get_vals(loc:int, board:list) ->list:
     elif loc < 7:
         return board[loc-3]
     else:
-        return list(zip(*board))[loc-8]
+        return list(list(zip(*board))[loc-8])
 def board_str(board):
     '''
     Takes in a 5x5 2D list representing a knister board and turns it into
@@ -344,6 +344,14 @@ def all_scores(vals:list):
     list (vals)with their corresponding scores. This excludes all states with 
     the same score as the initial state.
     '''
+    if vals == [0]*5 or not vals:
+        out = []
+        for i in range(2,13):
+            out+=[(x[0]+[i], x[1]) for x in all_scores([i])]
+        return out
+
+    elif len(vals) == 5:
+        return []
     return all_mults(vals)+all_straights(vals)
 def roll_worlds(num:int):
     return (6 - abs(7-num))
