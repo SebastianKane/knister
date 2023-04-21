@@ -46,11 +46,11 @@ def get_mults(vals:list) -> list:
     '''
     out = []
     space = 5 - len(vals)
-    if 5 - len(vals) > 1:
+    if space > 1:
         if len(set(vals)) > 1:
-            if 5 - len(vals) > 1:
+            if space > 1:
                 for u_val in (set(range(2,13))-set(vals)):
-                    for z in range(2, 6- len(vals)):
+                    for z in range(2, space + 1):
                         curr = vals.copy()
                         curr+=[u_val]*z
                         out.append(curr)
@@ -68,9 +68,8 @@ def get_mults(vals:list) -> list:
                                         curr2 = curr.copy()
                                         curr2+=[u_val]*z
                                         out.append(curr2)
-
         else:
-            for x in range(1,space):
+            for x in range(2,6):
                 curr = vals.copy()
                 curr+=[vals[0]]*x
                 out.append(curr)
@@ -78,7 +77,8 @@ def get_mults(vals:list) -> list:
                 for x in range(2, 6- len(vals)):
                     curr = vals.copy()
                     curr+=[u_val]*x
-                    out.append(curr)
+                    out.append(curr) 
+
             if len(vals) == 1:
                 for pair in list(combinations(set(range(2,13))-set(vals),2)):
                     curr = vals.copy()
@@ -272,6 +272,30 @@ def auto_play() -> int:
         print(board_str(out))
         r =roll()
     return out
+
+def set_vals(loc:int, board:list, vals:list):
+    '''
+    This sets the values of groups of elements in a 5x5 2D list using the 
+    following key for the loc parameter:
+    1: Descending Diag
+    2: Ascending Diag
+    3-7: Rows 1-5
+    8-12: Columns 1-5
+    This returns the new board after the values have been set.
+    '''
+    if loc == 1:
+        for x in range(5):
+                board[x][4-x] = vals[4-x]
+    elif loc == 2:
+        for x in range(5):
+                board[x][x] = vals[x]
+    elif loc < 8:
+        board[loc-3]=vals
+    else:
+        for x in range(5):
+            board[x][loc-8]=vals[x]
+    return board
+
 def board_str(board):
     '''
     Takes in a 5x5 2D list representing a knister board and turns it into
@@ -297,7 +321,7 @@ def avg_play(num:int):
     '''
     tot = sum(score_board(auto_play()) for x in range(num))
     return tot/num
-def get_all(vals:list):
+def all_scores(vals:list):
     '''
     Returns all possible additionally scoreable states from a 5 element 
     list (vals)with their corresponding scores. This excludes all states with 

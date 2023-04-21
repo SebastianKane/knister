@@ -1,5 +1,6 @@
 from dice_util import *
 from math import ceil
+from itertools import permutations as perm
 
 def likely_remaining(num:int):
     '''
@@ -11,7 +12,7 @@ def likely_remaining(num:int):
     out = sorted([(x[0],ceil(x[1])) for x in out[0:diff]] + [(x[0],int(x[1])) for x in out[diff:]], key = lambda x:x[0], reverse = True)
     return dict(out)
 
-def best_likely_board(board = [0*5]*5):
-    pass
+def best_likely_board(board = [[0]*5]*5):
+    best_scores = sorted(all_scores([7]),key = lambda x:x[1], reverse = True)
 
 
