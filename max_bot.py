@@ -12,7 +12,16 @@ def likely_remaining(num:int):
     out = sorted([(x[0],ceil(x[1])) for x in out[0:diff]] + [(x[0],int(x[1])) for x in out[diff:]], key = lambda x:x[0], reverse = True)
     return dict(out)
 
-def best_likely_board(board = [[0]*5]*5):
-    best_scores = sorted(all_scores([7]),key = lambda x:x[1], reverse = True)
+def best_likely_board(board = [[0]*5 for x in range(5)]):
+    best_board = (None, 0)
+    queue = [board]
+    while queue:
+        print(len(queue))
+        if '0' in str(board):
+            for i in range(0,12):
+                curr = board.copy()
+                set_vals
+
+    
 
 

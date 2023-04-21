@@ -273,29 +273,46 @@ def auto_play() -> int:
         r =roll()
     return out
 
-def set_vals(loc:int, board:list, vals:list):
+def set_vals(loc:int, board:list, vals:list) -> list:
     '''
     This sets the values of groups of elements in a 5x5 2D list using the 
     following key for the loc parameter:
-    1: Descending Diag
-    2: Ascending Diag
-    3-7: Rows 1-5
-    8-12: Columns 1-5
+    0: Descending Diag
+    1: Ascending Diag
+    2-6: Rows 1-5
+    7-11: Columns 1-5
     This returns the new board after the values have been set.
     '''
-    if loc == 1:
+    if loc == 0:
         for x in range(5):
                 board[x][4-x] = vals[4-x]
-    elif loc == 2:
+    elif loc == 1:
         for x in range(5):
                 board[x][x] = vals[x]
-    elif loc < 8:
+    elif loc < 7:
         board[loc-3]=vals
     else:
         for x in range(5):
             board[x][loc-8]=vals[x]
     return board
-
+def get_vals(loc:int, board:list) ->list:
+    '''
+    This gets the values of groups of elements in a 5x5 2D list using the 
+    following key for the loc parameter:
+    0: Descending Diag
+    1: Ascending Diag
+    2-6: Rows 1-5
+    7-11: Columns 1-5
+    This returns the corresponding slice of the board
+    '''
+    if loc == 0:
+        return [board[4-i][i] for i in range(5)]
+    elif loc == 1:
+        return [board[i][i] for i in range(5)]
+    elif loc < 7:
+        return board[loc-3]
+    else:
+        return list(zip(*board))[loc-8]
 def board_str(board):
     '''
     Takes in a 5x5 2D list representing a knister board and turns it into
