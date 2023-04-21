@@ -218,7 +218,7 @@ def score_straight(vals:list):
     else:
         return 0
 def score_vals(vals:list):
-     '''
+    '''
     Takes in a 5 element list representing a row, column or diagonal and 
     returns its score.
     '''
@@ -304,5 +304,7 @@ def get_all(vals:list):
     the same score as the initial state.
     '''
     return all_mults(vals)+all_straights(vals)
+def roll_worlds(num:int):
+    return (6 - abs(7-num))
 if __name__ == "__main__":
     main()
