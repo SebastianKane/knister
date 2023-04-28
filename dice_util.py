@@ -355,5 +355,14 @@ def all_scores(vals:list):
     return all_mults(vals)+all_straights(vals)
 def roll_worlds(num:int):
     return (6 - abs(7-num))
+def zip_empty(vals1:list, vals2:list):
+    if not vals1.count(0) == len(vals2):
+        raise Exception("The empty locations in vals1 need to be equal to the length of vals2.")
+    count = 0
+    for x in range(len(vals1)):
+        if vals1[x] == 0:
+            vals1[x]=vals2[count]
+            count+=1
+    return vals1
 if __name__ == "__main__":
     main()
