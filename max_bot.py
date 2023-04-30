@@ -95,14 +95,12 @@ def mult_sets(vals:list) -> set:
     empties = 0
     if not vals:
         for x in range(1,13):
-            for y in range(1,6)
-            out.append([x]*y)
+            for y in range(1,6):
+                out.append([x]*y)
         for pair in list(combinations(list(range(1,13)),2)):
             out.append([pair[0]]*2+[pair[1]]*2)
             out.append([pair[0]]*2+[pair[1]]*3)
-            out.append([pair[0]]*3+[pair[1]]*2)
-        out = sorted([(x, score_vals(x+vals)) for x in out], key = lambda x:x[1], reverse = True)
-
+            out.append([pair[0]]*3+[pair[1]]*2) 
     elif 0 in vals:
         empties = vals.count(0)
         vals = [x for x in vals if x != 0]
@@ -120,7 +118,6 @@ def mult_sets(vals:list) -> set:
 class Bstate():
     def __init__(self, board = [[0]*5 for x in range(5)] ):
         self.board = board
-        self.slices = [get_vals(x, self.board) for x in range(0,12)]
     def __str__(self):
         '''
         Takes in a 5x5 2D list representing a knister board and turns it into
@@ -139,6 +136,8 @@ class Bstate():
             out+=out_row[:-1]+"\n"
             out+="-- "*5+"\n"
         return out[:-16]+"\n"
+    def copy(self):
+        return Bstate(deep_copy(self.board))
     def get_slice(self, loc:int)->list:
         '''
         This gets the values of groups of elements in a 5x5 2D list using the 
@@ -157,20 +156,49 @@ class Bstate():
             return self.board[loc-2]
         else:
             return list(list(zip(*self.board))[loc-7])
-def slice_intersection(slice1:int, slice2:int) -> tuple:
-    slices = {slice1, slice2}
-    if 0 in slices and 1 in slices:
-        return (2,2)
-    elif 0 in slices:
-        num = (list(slices-{0})[0]-2 %5)
-        return (4-num, num)
-    elif 1 in slices:
-        num = (list(slices-{0})[0]-2 %5)
-        return (num, num)
-    else:
-        slices = sorted(slices)
-        return (slices[0]-2, slices[1]-7)
-        
+    def slices_to_coords(slice1:int, slice2:int) -> tuple:
+        '''
+        Takes in two board slice indices and returns a tuple of board coordinates
+        where they intersect.
+        Example:
+        Ascending Diagonal -> Index 0
+        Descending Diagonal -> Index 1
+        slices_to_coords(0,1) -> (2,2) (Where both diagonals intersec)
+        '''
+        slices = {slice1, slice2}
+        if 0 in slices and 1 in slices:
+            return (2,2)
+        elif 0 in slices:
+            num = ((list(slices-{0})[0]-2) %5) #This works don't be a dummy
+            return (4-num, num)
+        elif 1 in slices:
+            num = ((list(slices-{1})[0]-2) %5) #This works don't be a dummy
+            return (num, num)
+        else:
+            slices = sorted(slices)
+            return (slices[0]-2, slices[1]-7)
+    def has_zeroes(self):
+        for row in self.board:
+            if 0 in row:
+                return True
+    def coords_to_slices(y:int, x:int):
+        out = []
+        if 4-y == x:
+            out.append(0)
+        if y == x:
+            out.append(1)
+        out+=[y+2,x+7]
+        return out
+    def find_best_state(self):
+        out = self.copy()
+        while out.has_zeroes():
+            for slice1 in range(12):
+                for other in range(12):
+                    slice2= (slice1+other) % 12
+
+
+
+
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3

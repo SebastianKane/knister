@@ -36,67 +36,7 @@ def all_straights(vals:list) -> list:
                 out.append((list(set(range(val, val+5))-set(vals)), 12) )
         return out
     else:
-        return out
-
-def get_mults(vals:list) -> list:
-    '''
-    Takes in a list of 5 or less values and returns a list of all the possible 
-    pairs (2 or more) and fullhouses that can be made including the passed in
-    values.
-    '''
-    out = []
-    space = 5 - len(vals)
-    if space > 1:
-        if len(set(vals)) > 1:
-            if space > 1:
-                for u_val in (set(range(2,13))-set(vals)):
-                    for z in range(2, space + 1):
-                        curr = vals.copy()
-                        curr+=[u_val]*z
-                        out.append(curr)
-            for pair in list(combinations(set(vals),2)):
-                for x in range(space+1):
-                    for y in range(space-x+1):
-                        curr = vals.copy()
-                        curr += [pair[0]]*x
-                        curr += [pair[1]]*y
-                        if x!= 0 or y!=0:
-                            out.append(curr)
-                            if 5 - len(curr) > 1:
-                                 for u_val in (set(range(2,13))-set(curr)):
-                                    for z in range(2, 6- len(curr)):
-                                        curr2 = curr.copy()
-                                        curr2+=[u_val]*z
-                                        out.append(curr2)
-        else:
-            for x in range(2,6):
-                curr = vals.copy()
-                curr+=[vals[0]]*x
-                out.append(curr)
-            for u_val in (set(range(2,13))-set(vals)):
-                for x in range(2, 6- len(vals)):
-                    curr = vals.copy()
-                    curr+=[u_val]*x
-                    out.append(curr) 
-
-            if len(vals) == 1:
-                for pair in list(combinations(set(range(2,13))-set(vals),2)):
-                    curr = vals.copy()
-                    curr += [pair[0]]*2
-                    curr += [pair[1]]*2
-                    out.append(curr)
-    else:
-        for u_val in set(vals):
-            curr = vals.copy()
-            curr+=[u_val]
-            out.append(curr)
-
-    return out
-                            
-                               
-
-            
-            
+        return out            
 
 def all_mults(vals:list) -> list:
     '''
@@ -104,26 +44,32 @@ def all_mults(vals:list) -> list:
     the possible pairs (2 or more) and full houses that can be made using the 
     passed values and their corresponding scores.
     '''
-
-    mults = get_mults(vals)
-    out = []
-    for mult in mults:
-        u_vals = set(mult)
-        occurs = [mult.count(x) for x in u_vals]
-        if 3 in occurs and 2 in occurs:
-            out.append((list((Counter(mult)-Counter(vals)).elements()), 8))
-        elif occurs.count(2) == 2:
-            out.append((list((Counter(mult)-Counter(vals)).elements()), 2))
-        elif 2 in occurs:
-            out.append((list((Counter(mult)-Counter(vals)).elements()), 1))
-        elif 3 in occurs:
-            out.append((list((Counter(mult)-Counter(vals)).elements()), 3))
-        elif 4 in occurs:
-            out.append((list((Counter(mult)-Counter(vals)).elements()), 6))
-        elif 5 in occurs:
-            out.append((list((Counter(mult)-Counter(vals)).elements()), 10))
-    return out
-
+    out =[]
+    u_vals = set(vals)
+    empties = 0
+    if not vals:
+        for x in range(1,13):
+            for y in range(1,6):
+                out.append([x]*y)
+        for pair in list(combinations(list(range(1,13)),2)):
+            out.append([pair[0]]*2+[pair[1]]*2)
+            out.append([pair[0]]*2+[pair[1]]*3)
+            out.append([pair[0]]*3+[pair[1]]*2) 
+    elif 0 in vals:
+        empties = vals.count(0)
+        vals = [x for x in vals if x != 0]
+    else:
+        empties = 5 - len(vals)
+    for x in range(1,empties+1):
+        for val in u_vals:
+            out.append([val]*x)
+    for pair in list(combinations(u_vals,2)):
+        for x in range(1,empties):
+            for y in range(1, empties-x+1):
+                out.append([pair[0]]*x+[pair[1]]*y)
+    return sorted([(x, score_vals(x+vals)) for x in out], key = lambda x:x[1], reverse = True)
+    
+   
 def score_board(board: list) -> int:
     '''
     Takes in a 5x5 2D list representing a knister board and reeturns a score.
